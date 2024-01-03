@@ -1,9 +1,4 @@
-
-#include "lib/socketutil.h"
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "socketutil.h"
 
 int createTCPIpv4Socket(){return socket(AF_INET, SOCK_STREAM, 0);};
     // AF_INET - address family INET A.K.A. IPv4
@@ -29,32 +24,3 @@ struct sockaddr_in* createIpv4Address(char *ip, int port){
     return address;
 }
 
-int main(){
-
-    int socketFD = createTCPIpv4Socket(); 
-    // socketFD is to get a `file descriptor`
-
-    struct sockaddr_in* address = createIpv4Address("142.250.188.46", 80);
-
-    int result = connect(socketFD, address, sizeof(*address));
-    // connect A.K.A. fansy write()
-
-    if (result == 0){
-        printf("Connected successfully \n");
-    }else {
-        fprintf(stderr, "Failed to connect \n");
-    }
-
-    char* message;
-
-    message = "GET \\ HTTP/1.1\r\nHost:google.com\r\n\r\n";
-
-    send(socketFD, message, strlen(message), 0);
-
-    char buffer[1024];
-    recv(socketFD, buffer, 1024, 0);
-
-    printf("Responce: %s \n", buffer);
-
-    return 0;
-}
