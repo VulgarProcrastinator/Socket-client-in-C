@@ -1,10 +1,12 @@
 
 #include "lib/socketutil.h"
 
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include <stdbool.h>
+#include <unistd.h>
 
 int main(){
 
@@ -23,18 +25,39 @@ int main(){
         fprintf(stderr, "Failed to connect \n");
     }
 
-    char* message;
 
-    message = "GET \\ HTTP/1.1\r\nHost:google.com\r\n\r\n";
+    char *line = NULL;
+    size_t lineSize =0;
+    printf("type what you want to be send (EXIT to exit)\n");
 
-    send(socketFD, message, strlen(message), 0);
-    // write()
+    while (true) {
+        size_t charCount = getline(&line, &lineSize, stdin);
 
-    char buffer[1024];
-    recv(socketFD, buffer, 1024, 0);
-    // fansy read()
+        if(charCount >0){
+            if(strcmp(line, "EXIT\n") == 0){
+                break;
+            }
+            size_t amountWasSend = send(socketFD, line, charCount, 0);
+            // write()
+        }
 
-    printf("Responce: %s \n", buffer);
+    }
+
+    // char* message;
+
+    // message = "GET \\ HTTP/1.1\r\nHost:google.com\r\n\r\n";
+
+    // send(socketFD, message, strlen(message), 0);
+    // // write()
+
+    // char buffer[1024];
+    // recv(socketFD, buffer, 1024, 0);
+    // // fansy read()
+
+    // printf("Responce: %s \n", buffer);
+
+    close(socketFD);
+
 
     return 0;
 }
